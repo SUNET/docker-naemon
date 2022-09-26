@@ -16,6 +16,11 @@ RUN rm /etc/naemon/conf.d/printer.cfg \
        /etc/naemon/conf.d/localhost.cfg \
        /etc/naemon/conf.d/windows.cfg
 
+# Depends for check_metadata (used by SWAMID)
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y xsltproc && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY start.sh /
 
 CMD [ "/start.sh" ]
