@@ -22,5 +22,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY start.sh /
+COPY naemon-commands-without-checks.cfg /etc/naemon/conf.d/naemon-commands-without-checks.cfg
 
 CMD [ "/start.sh" ]
