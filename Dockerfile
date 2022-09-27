@@ -23,5 +23,7 @@ RUN apt-get update && \
 
 COPY start.sh /
 COPY naemon-commands-without-checks.cfg /etc/naemon/conf.d/naemon-commands-without-checks.cfg
+COPY nagflux-commands.cfg /etc/naemon/conf.d/nagflux-commands.cfg
+COPY nagflux-perfdata.cfg /etc/naemon/module-conf.d/nagflux-perfdata.cfg
 
 CMD [ "/start.sh" ]
