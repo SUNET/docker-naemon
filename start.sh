@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 /bin/mkdir -p /var/run/naemon
+/bin/mkdir -p /var/log/naemon/archives
 /bin/mkdir -p /var/naemon
 /bin/mkdir -p /var/nagflux/perfdata
 
