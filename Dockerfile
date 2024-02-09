@@ -2,11 +2,15 @@ FROM debian:bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Depends for setting up a custom apt repo
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y gpg curl ca-certificates && \
+    apt-get install --no-install-recommends -y gpg curl ca-certificates lsb-release && \
     rm -rf /var/lib/apt/lists/*
-RUN curl -sS https://labs.consol.de/repo/stable/RPM-GPG-KEY | gpg --dearmor > /usr/share/keyrings/labs.consol.de-5E3C45D7B312C643.gpg
-RUN echo 'deb [signed-by=/usr/share/keyrings/labs.consol.de-5E3C45D7B312C643.gpg] http://labs.consol.de/repo/stable/debian bullseye main' > /etc/apt/sources.list.d/consol.list
+
+# Setup custom repo and install thruk
+COPY naemon.asc  /etc/apt/trusted.gpg.d/naemon.asc
+RUN echo "deb [signed-by=/etc/apt/trusted.gpg.d/naemon.asc] http://download.opensuse.org/repositories/home:/naemon/Debian_$(lsb_release -rs)/ ./" >> /etc/apt/sources.list.d/naemon-stable.list
+
 RUN apt-get update && \
     apt-get install --no-install-recommends -y naemon-core naemon-livestatus monitoring-plugins monitoring-plugins-contrib nagios-nrpe-plugin file jq && \
     rm -rf /var/lib/apt/lists/*
