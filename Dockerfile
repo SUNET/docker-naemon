@@ -20,9 +20,9 @@ RUN rm /etc/naemon/conf.d/printer.cfg \
        /etc/naemon/conf.d/localhost.cfg \
        /etc/naemon/conf.d/windows.cfg
 
-# Depends for check_metadata (used by SWAMID)
+# Depends for checks
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y xsltproc && \
+    apt-get install --no-install-recommends -y xsltproc bind9-dnsutils && \
     rm -rf /var/lib/apt/lists/*
 
 COPY start.sh /
