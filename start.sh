@@ -13,4 +13,4 @@ EOF
 # Use commands defined by nagios-nrpe-plugin
 echo "include_dir=/etc/nagios-plugins/config/" > /etc/naemon/conf.d/commands.cfg
 
-/usr/bin/naemon --allow-root /etc/naemon/naemon.cfg
+exec /usr/bin/naemon --allow-root /etc/naemon/naemon.cfg
