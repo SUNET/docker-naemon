@@ -29,5 +29,7 @@ COPY start.sh /
 COPY naemon-commands-without-checks.cfg /etc/naemon/conf.d/naemon-commands-without-checks.cfg
 COPY nagflux-commands.cfg /etc/naemon/conf.d/nagflux-commands.cfg
 COPY nagflux-perfdata.cfg /etc/naemon/module-conf.d/nagflux-perfdata.cfg
+COPY livestatus_aggregate.cfg /etc/naemon/module-conf.d/livestatus_aggregate.cfg
+COPY check_livestatus_aggregation /usr/lib/naemon/plugins/check_livestatus_aggregation
 
 CMD [ "/start.sh" ]

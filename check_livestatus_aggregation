@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+
+import socket
+import sys
+import argparse
+import json
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--debug", help="Debug output", action=argparse.BooleanOptionalAction
+)
+parser.add_argument(
+    "--hosts-regexp",
+    dest="hosts_regexp",
+    type=str,
+    help="Regexp to filter hosts to monitor",
+    default=".*",
+)
+parser.add_argument(
+    "--min-positive-crit",
+    dest="min_positive_crit",
+    type=int,
+    help="Amount of minimum positive resluts for crit",
+    required=True,
+)
+parser.add_argument(
+    "--min-positive-warn",
+    dest="min_positive_warn",
+    type=int,
+    help="Amount of minimum positive resluts for warn",
+    required=True,
+)
+parser.add_argument(
+    "--services-regexp",
+    dest="services_regexp",
+    type=str,
+    help="Regexp to filter services to monitor",
+    default=".*",
+)
+parser.add_argument(
+    "--socket-host",
+    dest="socket_host",
+    type=str,
+    help="Host that serves the socket",
+    default="127.0.0.1",
+)
+parser.add_argument(
+    "--socket-port",
+    dest="socket_port",
+    type=int,
+    help="Port that serves the socket",
+    default="6666",
+)
+parser.add_argument(
+    "--mock-results", dest="mock_results", type=int, help="Mock positive results"
+)
+args = parser.parse_args()
+
+debug = args.debug
+
+if debug:
+    print(args)
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.settimeout(10)
+
+query_string = f"""GET services
+Columns: host_name description state
+Filter: host_name ~ {args.hosts_regexp}
+Filter: description ~ {args.services_regexp}
+OutputFormat: json
+"""
+query_bytes = query_string.encode("utf-8")
+
+if debug:
+    print(query_string)
+
+try:
+    s.connect((args.socket_host, args.socket_port))
+    s.sendall(query_bytes)
+    s.shutdown(socket.SHUT_WR)
+    received_data = b""
+    while 1:
+        data = s.recv(1024)
+        if len(data) == 0:
+            break
+        received_data += data
+except socket.error as e:
+    print(f"CRITICAL: Socket error: {e}")
+    sys.exit(2)
+finally:
+    s.close()
+
+try:
+    data = json.loads(received_data)
+except json.JSONDecodeError as e:
+    print(f"CRITICAL: Invalid JSON syntax: {e}")
+    sys.exit(2)
+
+positive_results = 0
+totalt_results = len(data)
+for reslut in data:
+    if reslut[2] == 0:
+        positive_results += 1
+
+if debug:
+    print(json.dumps(data, indent=4))
+
+if args.mock_results:
+    positive_results = args.mock_results
+
+status = "OK"
+exit_value = 0
+if positive_results <= args.min_positive_crit:
+    status = "CRITICAL"
+    exit_value = 2
+elif positive_results <= args.min_positive_warn:
+    status = "WARNING"
+    exit_value = 1
+
+print(f"{status}: {positive_results} (of {totalt_results}) are OK")
+sys.exit(exit_value)
