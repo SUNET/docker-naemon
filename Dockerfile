@@ -12,7 +12,17 @@ COPY naemon.asc  /etc/apt/trusted.gpg.d/naemon.asc
 RUN echo "deb [signed-by=/etc/apt/trusted.gpg.d/naemon.asc] http://download.opensuse.org/repositories/home:/naemon/Debian_$(lsb_release -rs)/ ./" >> /etc/apt/sources.list.d/naemon-stable.list
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends -y naemon-core naemon-livestatus monitoring-plugins monitoring-plugins-contrib nagios-nrpe-plugin file jq eapoltest python3 && \
+    apt-get install --no-install-recommends -y \
+      eapoltest                  \
+      file                       \
+      jq                         \
+      monitoring-plugins         \
+      monitoring-plugins-contrib \
+      naemon-core                \
+      naemon-livestatus          \
+      nagios-nrpe-plugin         \
+      python3                    \
+      && \
     rm -rf /var/lib/apt/lists/*
 # No need of example configuration
 RUN rm /etc/naemon/conf.d/printer.cfg \
