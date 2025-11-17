@@ -9,7 +9,7 @@ RUN apt-get update && \
 
 # Setup custom repo and install thruk
 COPY naemon.asc  /etc/apt/trusted.gpg.d/naemon.asc
-RUN echo "deb [signed-by=/etc/apt/trusted.gpg.d/naemon.asc] http://mirror.accum.se/repositories/home:/naemon/Debian_$(lsb_release -rs)/ ./" >> /etc/apt/sources.list.d/naemon-stable.list
+RUN echo "deb [signed-by=/etc/apt/trusted.gpg.d/naemon.asc] http://mirror.rackspace.co.uk/repositories/home:/naemon/Debian_$(lsb_release -rs)/ ./" >> /etc/apt/sources.list.d/naemon-stable.list
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
