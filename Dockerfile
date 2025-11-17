@@ -16,6 +16,7 @@ RUN apt-get update && \
       eapoltest                  \
       file                       \
       jq                         \
+      libmariadb3                \
       monitoring-plugins         \
       monitoring-plugins-contrib \
       naemon-core                \
