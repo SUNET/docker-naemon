@@ -22,6 +22,7 @@ RUN apt-get update && \
       naemon-core                \
       naemon-livestatus          \
       nagios-nrpe-plugin         \
+      nsca-client                \
       python3                    \
       && \
     rm -rf /var/lib/apt/lists/*
