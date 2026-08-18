@@ -35,6 +35,7 @@ RUN rm /etc/naemon/conf.d/printer.cfg \
 # Depends for checks
 RUN apt-get update && \
   apt-get install --no-install-recommends -y \
+  ssl-cert                                   \
   bc                                         \
   bind9-dnsutils                             \
   openssh-client                             \
