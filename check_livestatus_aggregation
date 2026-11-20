@@ -53,9 +53,22 @@ parser.add_argument(
     default="6666",
 )
 parser.add_argument(
+    "--ok-states",
+    dest="ok_states",
+    type=str,
+    default="0",
+    help="Comma separated member states counted as positive (0=OK, 1=WARNING)",
+)
+parser.add_argument(
     "--mock-results", dest="mock_results", type=int, help="Mock positive results"
 )
 args = parser.parse_args()
+
+try:
+    ok_states = {int(state) for state in args.ok_states.split(",")}
+except ValueError:
+    print(f"UNKNOWN: invalid --ok-states: {args.ok_states!r}")
+    sys.exit(3)
 
 debug = args.debug
 
@@ -101,7 +114,7 @@ except json.JSONDecodeError as e:
 positive_results = 0
 totalt_results = len(data)
 for reslut in data:
-    if reslut[2] == 0:
+    if reslut[2] in ok_states:
         positive_results += 1
 
 if debug:
